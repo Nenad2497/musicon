@@ -1,0 +1,45 @@
+{% extends "core/layout.html" %}
+{% load static %}
+
+{% block title %}Svi Bendovi{% endblock title %}
+
+{% block content %}
+<div class="bg-container">
+    <div class="bg-overlay"></div>
+    <div class="content-above-overlay container py-5">
+        <div class="page-header text-center">
+            <h1 class="title">Svi Bendovi</h1>
+            <p class="hero-subtitle">Pretraži sve bendove na platformi.</p>
+        </div>
+
+        <div class="row mt-5">
+            {% for band in page_obj %}
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="band-card">
+                    <a href="{% url 'check_band_details' band.pk %}">
+                        {% if band.profile_picture %}
+                            <img src="{{ band.profile_picture.url }}" class="card-img-top" alt="{{ band.name }}">
+                        {% else %}
+                            <img src="https://via.placeholder.com/300x200.png?text={{band.name}}" class="card-img-top" alt="{{ band.name }}">
+                        {% endif %}
+                    </a>
+                    <div class="card-body">
+                        <h5 class="band-card-title">{{ band.name }}</h5>
+                        <p class="card-text">{{ band.genres }}</p>
+                        <a href="{% url 'check_band_details' band.pk %}" class="btn btn-custom-blue">Pogledaj Profil</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <nav class="pagination-container">
+            <ul class="pagination justify-content-center">
+                {% if page_obj.has_previous %}<li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">Prethodna</a></li>{% endif %}
+                <li class="page-item disabled"><span class="page-link">Stranica {{ page_obj.number }} od {{ page_obj.paginator.num_pages }}</span></li>
+                {% if page_obj.has_next %}<li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">Sledeća</a></li>{% endif %}
+            </ul>
+        </nav>
+    </div>
+</div>
+{% endblock content %}

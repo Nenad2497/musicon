@@ -1,0 +1,123 @@
+{% extends "core/layout.html"%}
+{% load static %}
+{% block content %}
+<!-- Hero Section -->
+<div class="hero-container px-2">
+    <div class="video-overlay"></div>
+    <video src="{% static 'videos/video2.mp4' %}" autoPlay loop muted class="video-bg"></video>
+    <div class="hero-content text-center">
+        <h1 class="hero-title">DOBRODOŠLI U <strong class="title">MUSICON !</strong></h1>
+        <h6 class="hero-title">Poveži se. Sviraj. Dominiraj.</h6>
+        <p class="hero-subtitle">
+            Tvoja ultimativna platforma za pronalaženje metal i rock muzičara.
+        </p>
+        <div class="row d-flex justify-content-center mx-2">
+            <a href="#featured-bands" class="btn btn-custom-blue mx-1 col-md-5 text-white">
+                POGLEDAJ BENDOVE
+            </a>
+        </br>
+            <a href="{% url 'register' %}" class="btn btn-custom-blue mx-1 col-md-5 text-white">
+                POVEŽI SE ODMAH!
+            </a>
+        </div>
+    </div>
+</div>
+
+<section id="how-it-works" class="py-5 section-dark">
+    <div class="container text-center">
+        <h2 class="title mb-5">Poveži se u 3 Koraka</h2>
+        <hr>
+        <div class="row pt-4">
+            <div class="col-md-4 mb-4">
+                <div class="step-card">
+                    <div class="step-number">1</div>
+                    <h4 class="mt-3">Kreiraj Profil</h4>
+                    <p>Napravi svoj muzički profil, navedi instrumente, žanrove i uticaje.</p>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="step-card">
+                    <div class="step-number">2</div>
+                    <h4 class="mt-3">Pronađi Muzičare</h4>
+                    <p>Pretražuj bazu muzičara i bendova po žanru, lokaciji i instrumentu.</p>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="step-card">
+                    <div class="step-number">3</div>
+                    <h4 class="mt-3">Započni Svirku</h4>
+                    <p>Poveži se, dogovori probu i započni stvaranje moćne muzike.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="featured-bands" class="py-5 section-darker">
+    <div class="container">
+        <h2 class="title text-center mb-4">Izdvojeni Bendovi</h2>
+          <hr class="bg-white">
+        <div class="row mt-5">
+            {% for band in featuredBands %}
+            <div class="col-md-4 mb-4">
+                <div class="band-card">
+                    {% if band.profile_picture %}
+                        <img src="{{ band.profile_picture.url }}" class="card-img-top" alt="{{ band.name }}">
+                    {% else %}
+                        <img src="https://via.placeholder.com/300x200.png?text={{band.name}}" class="card-img-top" alt="{{ band.name }}">
+                    {% endif %}
+                    <div class="card-body">
+                        <h5 class="band-card-title">{{ band.name }}</h5>
+                        <p class="card-text">{{ band.genres }}</p>
+                        <a href="{% url 'check_band_details' band.pk %}" class="btn btn-custom-blue">Pogledaj Profil</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<section id="upcoming-gigs" class="py-5 section-dark">
+    <div class="container">
+        <h2 class="title text-center mb-5">Nadolazeći Događaji</h2>
+        <div class="row">
+            {% for gig in upcoming_gigs %}
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="gig-card">
+                    <div class="gig-card-header">
+                        <div class="gig-card-date">
+                            <span class="day">{{ gig.date|date:"d" }}</span>
+                            <span class="month">{{ gig.date|date:"M" }}</span>
+                        </div>
+                        <h5 class="gig-card-title">
+                            {% if gig.user.bandprofile %}{{ gig.user.bandprofile.name }}{% else %}{{ gig.user.username }}{% endif %}
+                        </h5>
+                    </div>
+                    <div class="gig-card-body">
+                        <p class="gig-card-location"><i class="fas fa-map-marker-alt me-2"></i>{{ gig.local_name }}, {{ gig.city }}, {{ gig.country }}</p>
+                        <p class="gig-card-time"><i class="fas fa-clock me-2"></i>{{ gig.time|time:"H:i" }}h</p>
+                        {% if gig.description %}
+                        <p class="gig-card-description">{{ gig.description }}</p>
+                        {% endif %}
+                        <hr class="my-2" style="border-color: #444;">
+                        <p class="gig-card-price">{% if gig.price > 0 %}<i class="fas fa-ticket-alt me-2"></i>{{ gig.price|floatformat:2 }} RSD{% else %}<i class="fas fa-ticket-alt me-2"></i>Besplatan ulaz{% endif %}</p>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <p class="text-center text-muted">Trenutno nema najavljenih svirki.</p>
+            {% endfor %}
+    </div>
+</section>
+
+<section id="parallax-showcase" class="py-5 section-transparent">
+    <div class="container text-center">
+        <h2 class="title mb-4">Muzika je Naša Strast</h2>
+        <p class="hero-subtitle" style="max-width: 700px; margin: 0 auto;">
+            Otkrij nove zvukove, pronađi inspiraciju i postani deo zajednice koja živi za muziku.
+        </p>
+    </div>
+</section>
+
+{% endblock content %}

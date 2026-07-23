@@ -1,0 +1,61 @@
+{% extends 'core/layout.html' %}
+{% block title %}Register{% endblock title %}
+{% block content %}
+<div class="bg-container">
+  <div class="content-above-overlay container d-flex justify-content-center align-items-center min-vh-100">
+    <div class="form-box p-4 p-md-5 text-white">
+      <h2 class="text-center mb-4">Regisruj akaunt</h2>
+      <form method="post">
+        {% csrf_token %}
+        <div class="mb-3">
+          <label for="id_username" class="form-label">Korisničko ime</label>
+          <input type="text" name="username" id="id_username" class="form-control bg-dark text-white">
+          {% for error in form.username.errors %}
+          <div class="notification notification-error mt-1 p-1">{{ error }}</div>
+          {% endfor %}
+        </div>
+
+        <div class="mb-3">
+          <label for="id_password1" class="form-label">Lozinka</label>
+          <input type="password" name="password1" id="id_password1" class="form-control bg-dark text-white">
+          {% if form.password.help_text %}
+          <small class="form-text text-muted">{{ form.password.help_text|safe }}</small>
+          {% endif %}
+          {% for error in form.password.errors %}
+          <div class="notification notification-error mt-1 p-1">{{ error }}</div>
+          {% endfor %}
+        </div>
+
+        <div class="mb-3">
+          <label for="id_password2" class="form-label">Potvrdi Lozinku</label>
+          <input type="password" name="password2" id="id_password2" class="form-control bg-dark text-white">
+          {% for error in form.password2.errors %}
+          <div class="notification notification-error mt-1 p-1">{{ error }}</div>
+          {% endfor %}
+        </div>
+
+        <button type="submit" class="btn btn-custom-blue w-100">Registruj se</button>
+        {% if messages %}
+        <div class="alert alert-info" id="message-alert">
+          {% for message in messages %}
+          <p>{{ message }}</p>
+          {% endfor %}
+        </div>
+
+        <script type="text/javascript">
+          setTimeout(function () {
+            var alertElement = document.getElementById('message-alert');
+            if (alertElement) {
+              alertElement.classList.add('fade');
+              alertElement.classList.add('collapse'); 
+            }
+          }, 3000);  
+        </script>
+        {% endif %}
+
+      </form>
+      <p class="text-center mt-3">Već imas akaunt?<a href="{% url 'login' %}">uloguj se ovde!</a></p>
+    </div>
+  </div>
+</div>
+{% endblock content %}

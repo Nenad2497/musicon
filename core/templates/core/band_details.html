@@ -1,0 +1,168 @@
+{% extends "core/layout.html" %}
+{% load static %}
+
+{% block title %}{{ band.name }} - Profil Benda{% endblock title %}
+
+{% block content %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+<div class="bg-container">
+    <div class="bg-overlay"></div>
+    <div class="content-above-overlay container py-5 mt-5">
+        <div class="band-details-card bg-dark p-4 p-md-5">
+            <div class="row">
+                <div class="col-lg-4 text-center text-lg-start mb-4 mb-lg-0">
+                    {% if band.profile_picture %}
+                    <img src="{{ band.profile_picture.url }}" alt="{{ band.name }}"
+                        class="band-details-img img-fluid rounded-circle mb-4">
+                    {% else %}
+                    <img src="https://via.placeholder.com/200x200.png?text={{band.name|slice:':1'}}"
+                        alt="{{ band.name }}" class="band-details-img img-fluid rounded-circle mb-4">
+                    {% endif %}
+
+                    <h1 class="band-name-details">{{ band.name }}</h1>
+
+                    {% if band.city or band.country %}
+                    <p class="text-muted"><i class="fas fa-map-marker-alt me-2"></i>{{ band.city }}{% if band.city and band.country %}, {% endif %}{{ band.country }}</p>
+                    {% endif %}
+
+                    <hr class="d-lg-none">
+   {% if band.song1 or band.song2 %} <br>
+                    <h5 class="mb-3 section-title-details">Pesme</h5>
+                        {% if band.song1 %}
+                        <audio controls class="w-100 mb-2">
+                            <source src="{{ band.song1.url }}" type="audio/mpeg">
+                        </audio>
+                        {% endif %}
+                        {% if band.song2 %}
+                        <audio controls class="w-100">
+                            <source src="{{ band.song2.url }}" type="audio/mpeg">
+                        </audio>
+                        {% endif %}
+                    {% endif %}
+                    <hr>
+                    <h5 class="mt-4 mb-3 section-title-details">Kontakt & Linkovi</h5>
+                    {% if band.contact_email %} <br>
+                    <p class="fas fa-envelope me-2 " style="cursor:pointer" data-bs-toggle="modal"
+                        data-bs-target="#exampleModal" data-bs-whatever="@mdo"> Pošalji Poruku Bendu</a></p>
+                    {% endif %}
+                    
+                 
+                    <div class="d-flex justify-content-center justify-content-lg-start flex-wrap">
+                        {% if band.spotify_link %}<a href="{{ band.spotify_link }}" target="_blank"
+                            class="social-icon spotify"><i class="fab fa-spotify"></i></a>{% endif %}
+                        {% if band.youtube_link %}<a href="{{ band.youtube_link }}" target="_blank"
+                            class="social-icon youtube"><i class="fab fa-youtube"></i></a>{% endif %}
+                        {% if band.facebook_link %}<a href="{{ band.facebook_link }}" target="_blank"
+                            class="social-icon facebook"><i class="fab fa-facebook-f"></i></a>{% endif %}
+                        {% if band.instagram_link %}<a href="{{ band.instagram_link }}" target="_blank"
+                            class="social-icon instagram"><i class="fab fa-instagram"></i></a>{% endif %}
+                    </div>
+                </div>
+
+                <div class="col-lg-8">
+                    {% if band.bio %}
+                    <h5 class="section-title-details">Biografija</h5>
+                    <p class="band-bio">{{ band.bio|linebreaks }}</p>
+                    <hr>
+                    {% endif %}
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            {% if band.genres %}
+                            <h5 class="section-title-details">Žanrovi</h5>
+                            <div class="mb-3">
+                                {% for genre in genres_list %}
+                                <span class="badge bg-secondary genre-badge">{{ genre }}</span>
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6">
+                            {% if band.influences %}
+                            <h5 class="section-title-details">Muzički Uzori</h5>
+                            <p>{{ band.influences }}</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <hr>
+
+                    <h5 class="section-title-details">Status</h5>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <div class="status-card">
+                                <div class="status-icon available">
+                                    <i class="fas fa-guitar"></i>
+                                </div>
+                                <div>
+                                    <strong>Dostupni za svirke?</strong>
+                                    <p class="mb-0">{% if band.available_for_gigs %}Da{% else %}Ne{% endif %}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="status-card">
+                                <div class="status-icon looking">
+                                    <i class="fas fa-user-plus"></i>
+                                </div>
+                                <div>
+                                    <strong>Traže članove?</strong>
+                                    <p class="mb-0">{% if band.looking_for_members %}Da{% else %}Ne{% endif %}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {% if band.looking_for_members and band.needed_members_description %}
+                    <div class="needed-members-desc mt-3">
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-search me-2"></i>
+                            <h6>Koga traže:</h6>
+                        </div>
+                        <p class="needed-members-text">{{ band.needed_members_description }}</p>
+                    </div>
+                    {% endif %}
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="modal fade" id="exampleModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <div class="modal-body bg-dark">
+
+                    <form method="POST">
+                        <h2 class="my-5">Pošalji poruku bendu</h2>
+                        <hr class="bg-white">
+
+                        {% csrf_token %}
+
+                        <input type="text" name="sender_name" class="form-control custom-input mb-3"
+                            placeholder="Pošiljalac">
+
+                        <input type="email" name="sender_email" class="form-control custom-input mb-3"
+                            placeholder="Email pošiljaoca">
+
+                        <input type="text" name="phone_contact" class="form-control custom-input mb-3"
+                            placeholder="Telefon pošiljaoca">
+
+                        <textarea name="message" class="form-control custom-input mb-3" rows="5"
+                            placeholder="Poruka za bend"></textarea>
+
+                        <button type="submit" class="btn btn-custom-blue">
+                            Pošalji
+                        </button>
+
+                    </form>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

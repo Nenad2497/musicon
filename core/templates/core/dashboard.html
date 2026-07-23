@@ -1,0 +1,147 @@
+{% extends "core/layout.html" %}
+{% load static %}
+
+{% block title %}Band Dashboard{% endblock title %}
+
+{% block content %}
+<div class="bg-container">
+    <div class="bg-overlay"></div>
+
+    <div class="content-above-overlay container-fluid py-5 px-lg-5">
+        <h1 class="mb-4 title text-center text-white mt-5">Podesi Profil Benda</h1>
+        <div class="form-box form-box-lg p-4 p-md-5 mb-5 mx-auto">
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <div class="row">
+                <div class="col-lg-6">
+                    <h3 class="mb-4 border-bottom pb-2 text-white">Osnovne Informacije</h3>
+
+                    <div class="mb-4">
+                        <label for="bandName" class="form-label">Ime Benda</label>
+                        <input type="text" name="name" value="{{ profile.name|default_if_none:'' }}" class="form-control custom-input" id="bandName">
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="id_profile_picture" class="form-label">Profilna Slika / Logo</label>
+
+                        <div class="my-2">
+                            {% if profile.profile_picture %}
+                                <img id="image-preview" src="{{ profile.profile_picture.url }}" alt="Profilna slika" class="img-thumbnail" style="max-width: 150px; max-height: 150px;">
+                            {% else %}
+                                <img id="image-preview" src="https://via.placeholder.com/150" alt="Nema slike" class="img-thumbnail" style="max-width: 150px; max-height: 150px;">
+                            {% endif %}
+                        </div>
+                        <input type="file" name="profile_picture" class="form-control custom-input" id="id_profile_picture" accept="image/*">
+
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6 mb-3 mb-md-0">
+                            <label for="song1" class="form-label">Pesma1</label>
+                            <input type="file" name="song1" value="{{ profile.song1|default_if_none:'' }}" class="form-control custom-input" id="song1">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="song2" class="form-label">Pesma2</label>
+                            <input type="file" name="song2" value="{{ profile.song2|default_if_none:'' }}" class="form-control custom-input" id="song2">
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6 mb-3 mb-md-0">
+                            <label for="city" class="form-label">Grad</label>
+                            <input type="text" name="city" value="{{ profile.city|default_if_none:'' }}" class="form-control custom-input" id="city">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="country" class="form-label">Država</label>
+                            <input type="text" name="country" value="{{ profile.country|default_if_none:'' }}" class="form-control custom-input" id="country">
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="bandBio" class="form-label">Biografija Benda</label>
+                        <textarea name="bio" class="form-control custom-input" id="bandBio" rows="5">{{ profile.bio|default_if_none:'' }}</textarea>
+                    </div>
+
+                    <h3 class="mb-4 border-bottom pb-2 text-white">Muzički Detalji</h3>
+                    <div class="mb-4">
+                        <label for="genres" class="form-label">Žanrovi</label>
+                        <input type="text" name="genres" value="{{ profile.genres|default_if_none:'' }}" class="form-control custom-input" id="genres" placeholder="Npr. Heavy Metal, Stoner Rock, Metalcore">
+                        <small class="form-text text-muted">Odvojite žanrove zarezom.</small>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="influences" class="form-label">Muzički Uzori / Uticaji</label>
+                        <textarea name="influences" class="form-control custom-input" id="influences" rows="3" placeholder="Npr. Black Sabbath, Iron Maiden, Metallica...">{{ profile.influences|default_if_none:'' }}</textarea>
+                    </div>
+                </div>
+
+                <div class="col-lg-6">
+                    <h3 class="mb-4 border-bottom pb-2 text-white">Potraga za Članovima i Svirke</h3>
+
+                    <div class="form-check form-switch mb-3 d-flex align-items-center">
+                        <input type="checkbox" name="looking_for_members" class="form-check-input" id="id_looking_for_members" {% if profile.looking_for_members %}checked{% endif %}>
+                        <label class="form-check-label ms-2" for="id_looking_for_members">Tražite nove članove?</label>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="neededMembers" class="form-label">Koga tražite?</label>
+                        <textarea name="needed_members_description" class="form-control custom-input" id="neededMembers" rows="3" placeholder="Opišite koga tražite (npr. 'Bubnjar sa iskustvom...')">{{ profile.needed_members_description|default_if_none:'' }}</textarea>
+                    </div>
+
+                    <div class="form-check form-switch mb-4 d-flex align-items-center">
+                        <input type="checkbox" name="available_for_gigs" class="form-check-input" id="id_available_for_gigs" {% if profile.available_for_gigs %}checked{% endif %}>
+                        <label class="form-check-label ms-2" for="id_available_for_gigs">Dostupni za svirke?</label>
+                    </div>
+
+                    <h3 class="mb-4 border-bottom pb-2 text-white">Linkovi i Kontakt</h3>
+
+                    <div class="mb-3">
+                        <label for="contactEmail" class="form-label">Kontakt Email</label>
+                        <input type="email" name="contact_email" value="{{ profile.contact_email|default_if_none:'' }}" class="form-control custom-input" id="contactEmail" placeholder="email@example.com">
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="linkSpotify" class="form-label">Spotify Link</label>
+                            <input type="url" name="spotify_link" value="{{ profile.spotify_link|default_if_none:'' }}" class="form-control custom-input" id="linkSpotify" placeholder="https://open.spotify.com/artist/...">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="linkYoutube" class="form-label">YouTube Link</label>
+                            <input type="url" name="youtube_link" value="{{ profile.youtube_link|default_if_none:'' }}" class="form-control custom-input" id="linkYoutube" placeholder="https://www.youtube.com/channel/...">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="linkFacebook" class="form-label">Facebook Link</label>
+                            <input type="url" name="facebook_link" value="{{ profile.facebook_link|default_if_none:'' }}" class="form-control custom-input" id="linkFacebook" placeholder="https://www.facebook.com/yourband">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="linkInstagram" class="form-label">Instagram Link</label>
+                            <input type="url" name="instagram_link" value="{{ profile.instagram_link|default_if_none:'' }}" class="form-control custom-input" id="linkInstagram" placeholder="https://www.instagram.com/yourband">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-4">
+                <button type="submit" name="update_profile" class="btn btn-custom-blue w-100">Sačuvaj Profil</button>
+            </div>
+        </form>
+    </div>
+
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const imageInput = document.getElementById('id_profile_picture');
+    const imagePreview = document.getElementById('image-preview');
+
+    if (imageInput && imagePreview) {
+        imageInput.addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (file) {
+                imagePreview.src = URL.createObjectURL(file);
+            }
+        });
+    }
+});
+</script>
+{% endblock content %}

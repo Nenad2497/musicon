@@ -1,0 +1,51 @@
+{% extends "core/layout.html" %}
+{% load static %}
+
+{% block title %}Sve Svirke{% endblock title %}
+
+{% block content %}
+<div class="bg-container">
+    <div class="bg-overlay"></div>
+    <div class="content-above-overlay container py-5">
+        <div class="page-header text-center">
+            <h1 class="title">Sve Svirke</h1>
+            <p class="hero-subtitle">Lista svih nadolazećih događaja.</p>
+        </div>
+
+        <div class="row mt-5">
+            {% for gig in page_obj %}
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="gig-card">
+                    <div class="gig-card-header">
+                        <div class="gig-card-date">
+                            <span class="day">{{ gig.date|date:"d" }}</span>
+                            <span class="month">{{ gig.date|date:"M" }}</span>
+                        </div>
+                        <h5 class="gig-card-title">
+                            {% if gig.user.bandprofile %}{{ gig.user.bandprofile.name }}{% else %}{{ gig.user.username }}{% endif %}
+                        </h5>
+                    </div>
+                    <div class="gig-card-body">
+                        <p class="gig-card-location"><i class="fas fa-map-marker-alt me-2"></i>{{ gig.local_name }}, {{ gig.city }}, {{ gig.country }}</p>
+                        <p class="gig-card-time"><i class="fas fa-clock me-2"></i>{{ gig.time|time:"H:i" }}h</p>
+                        {% if gig.description %}<p class="gig-card-description">{{ gig.description }}</p>{% endif %}
+                        <hr class="my-2" style="border-color: #444;">
+                        <p class="gig-card-price">{% if gig.price > 0 %}<i class="fas fa-ticket-alt me-2"></i>{{ gig.price|floatformat:2 }} RSD{% else %}<i class="fas fa-ticket-alt me-2"></i>Besplatan ulaz{% endif %}</p>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <p class="text-center text-muted mt-5">Trenutno nema najavljenih svirki.</p>
+            {% endfor %}
+        </div>
+
+        <nav class="pagination-container">
+            <ul class="pagination justify-content-center">
+                {% if page_obj.has_previous %}<li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">Prethodna</a></li>{% endif %}
+                <li class="page-item disabled"><span class="page-link">Stranica {{ page_obj.number }} od {{ page_obj.paginator.num_pages }}</span></li>
+                {% if page_obj.has_next %}<li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">Sledeća</a></li>{% endif %}
+            </ul>
+        </nav>
+    </div>
+</div>
+{% endblock content %}
