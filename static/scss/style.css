@@ -170,24 +170,36 @@ text {
 }
 
 .hero-title {
-  font-size: 3rem;
+  font-size: 3vw;
+  font-weight: 900;
+  color: var(--white);
+}
+
+.hero-title2 {
+  font-size: 4vw;
   font-weight: 900;
   color: var(--white);
 }
 
 .header-title2 {
-  font-size: 2vw;
+  font-size: 3vw;
   color: var(--accent);
 }
 
 .title {
-  font-size: 4rem;
+  font-size: 2vw;
+  font-weight: 900;
+  color: var(--accent);
+}
+
+.title2 {
+  font-size: 4vw;
   font-weight: 900;
   color: var(--accent);
 }
 
 .hero-subtitle {
-  font-size: 1.5rem;
+  font-size: 1.725rem;
   margin-top: 1rem;
   margin-bottom: 2rem;
   color: #ccc;
